@@ -9,6 +9,12 @@ module.exports = {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
+      first_name: {
+        type: DataTypes.STRING,
+      },
+      last_name: {
+        type: DataTypes.STRING,
+      },
       email: {
         type: DataTypes.STRING,
       },

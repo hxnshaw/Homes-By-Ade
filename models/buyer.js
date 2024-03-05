@@ -15,6 +15,16 @@ module.exports = (sequelize, DataTypes) => {
   }
   Buyer.init(
     {
+      first_name: {
+        type: DataTypes.STRING,
+        required: true,
+        allowNull: false,
+      },
+      last_name: {
+        type: DataTypes.STRING,
+        required: true,
+        allowNull: false,
+      },
       email: {
         type: DataTypes.STRING,
         required: true,
@@ -48,7 +58,7 @@ module.exports = (sequelize, DataTypes) => {
   Buyer.addHook("beforeSave", async function (buyer) {
     if (!buyer.changed("password")) return;
     const salt = await bcrypt.genSaltSync(10);
-    clerk.password = await bcrypt.hashSync(buyer.password, salt);
+    buyer.password = await bcrypt.hashSync(buyer.password, salt);
   });
 
   //method to check user entered the correct password
