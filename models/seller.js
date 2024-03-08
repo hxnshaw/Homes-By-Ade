@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Seller extends Model {
     /**
@@ -13,16 +11,58 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  Seller.init({
-    first_name: DataTypes.STRING,
-    last_name: DataTypes.STRING,
-    phone_number: DataTypes.STRING,
-    email: DataTypes.STRING,
-    phone_number: DataTypes.STRING,
-    professional_type: DataTypes.ENUM
-  }, {
-    sequelize,
-    modelName: 'Seller',
-  });
+  Seller.init(
+    {
+      first_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        required: true,
+      },
+      last_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        required: true,
+      },
+      phone_number: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        required: true,
+      },
+      email: {
+        type: DataTypes.STRING,
+        required: true,
+        unique: true,
+        allowNull: false,
+        validate: {
+          isEmail: { message: "Please provide a valid email address" },
+        },
+      },
+      phone_number: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        required: true,
+      },
+      professional_type: {
+        type: DataTypes.ENUM("Landlord", "Real Estate Agent"),
+      },
+      password: {
+        type: DataTypes.STRING,
+        required: true,
+        allowNull: false,
+        validate: {
+          min: 5,
+        },
+      },
+      role: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "buyer",
+      },
+    },
+    {
+      sequelize,
+      modelName: "Seller",
+    }
+  );
   return Seller;
 };

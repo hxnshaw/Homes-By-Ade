@@ -1,43 +1,46 @@
-'use strict';
-/** @type {import('sequelize-cli').Migration} */
+"use strict";
+/** @type {import('DataTypes-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Sellers', {
+  async up(queryInterface, DataTypes) {
+    await queryInterface.createTable("Sellers", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: DataTypes.INTEGER,
       },
       first_name: {
-        type: Sequelize.STRING
+        type: DataTypes.STRING,
       },
       last_name: {
-        type: Sequelize.STRING
+        type: DataTypes.STRING,
       },
       phone_number: {
-        type: Sequelize.STRING
+        type: DataTypes.STRING,
       },
       email: {
-        type: Sequelize.STRING
-      },
-      phone_number: {
-        type: Sequelize.STRING
+        type: DataTypes.STRING,
       },
       professional_type: {
-        type: Sequelize.ENUM
+        type: DataTypes.ENUM("Landlord", "Real Estate Agent"),
+      },
+      password: {
+        type: DataTypes.STRING,
+      },
+      role: {
+        type: DataTypes.STRING,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: DataTypes.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: DataTypes.DATE,
+      },
     });
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Sellers');
-  }
+  async down(queryInterface, DataTypes) {
+    await queryInterface.dropTable("Sellers");
+  },
 };
