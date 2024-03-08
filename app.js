@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 
 //routers
 const buyerRouter = require("./routers/buyerRouter");
+const sellerRouter = require("./routers/sellerRouter");
 
 //NotFound and ErrorHandler Middlewares
 const notFoundMiddleware = require("./middlewares/not-found");
@@ -18,6 +19,7 @@ app.use(cookieParser(process.env.JWT_SECRET_TOKEN));
 
 //setup routers
 app.use("/api/v1/ade-homes", buyerRouter);
+app.use("/api/v1/ade-homes", sellerRouter);
 
 app.use(notFoundMiddleware);
 

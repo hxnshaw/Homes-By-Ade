@@ -35,13 +35,13 @@ exports.loginBuyer = async (req, res) => {
     if (!email || !password)
       throw new CustomError.BadRequestError("Your details no complete");
     const user = await Buyer.findOne({ where: { email: email } });
-    if (!user) throw new CustomError.BadRequestError("who goes you?");
+    if (!user) throw new CustomError.NotFoundError("who goes you?");
     const passwordIsCorrect = await user.comparePassword(password);
     if (!passwordIsCorrect)
       throw new CustomError.BadRequestError("Invalid credentials");
     const tokenUser = createTokenUser(user);
     attachCookiesToResponse({ res, user: tokenUser });
-    res.status(StatusCodes.OK).json({ data: tokenUser });
+    res.status(StatusCodes.OK).json({ message: "login successful" });
   } catch (error) {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)

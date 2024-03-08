@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const bcrypt = require("bcrypt");
 module.exports = (sequelize, DataTypes) => {
   class Seller extends Model {
     /**
@@ -37,11 +38,6 @@ module.exports = (sequelize, DataTypes) => {
           isEmail: { message: "Please provide a valid email address" },
         },
       },
-      phone_number: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        required: true,
-      },
       professional_type: {
         type: DataTypes.ENUM("Landlord", "Real Estate Agent"),
       },
@@ -56,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
       role: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: "buyer",
+        defaultValue: "seller",
       },
     },
     {
@@ -64,5 +60,19 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "Seller",
     }
   );
+
+  Seller.addHook("beforeSave", async function (seller) {
+    if (!seller.changed("password")) return;
+    const salt = await bcrypt.genSaltSync(10);
+    seller.password = await bcrypt.hashSync(seller.password, salt);
+  });
+
+  Seller.prototype.comparePassword = async function (sellerPassword) {
+    const seller = this;
+    const isMatch = await bcrypt.compare(sellerPassword, seller.password);
+    if (!isMatch) throw new Error("Invalid Credentials");
+    return isMatch;
+  };
+
   return Seller;
 };
