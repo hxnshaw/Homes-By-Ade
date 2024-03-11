@@ -23,7 +23,6 @@ const authenticateUser = async (req, res, next) => {
     next();
   } catch (error) {
     throw new CustomError.UnauthenticatedError("INVALID AUTHENTICATION");
-    //res.status(StatusCodes.UNAUTHORIZED).json({ error: error.message });
   }
 };
 
@@ -37,8 +36,6 @@ const authorizePermissions = (...roles) => {
     next();
   };
 };
-
-
 
 module.exports = {
   authenticateUser,
