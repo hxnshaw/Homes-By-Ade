@@ -48,3 +48,17 @@ exports.loginBuyer = async (req, res) => {
       .json({ error: error.message });
   }
 };
+
+exports.logoutBuyer = async (req, res) => {
+  try {
+    res.cookie("token", "logout", {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+    });
+    res.status(StatusCodes.OK).json({ message: "You are logged out" });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
+  }
+};
