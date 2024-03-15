@@ -62,3 +62,47 @@ exports.logoutBuyer = async (req, res) => {
       .json({ error: error.message });
   }
 };
+
+exports.getAllBuyers = async (req, res) => {
+  try {
+    const buyers = await Buyer.findAll({
+      attributes: { exclude: ["password"] },
+    });
+    if (buyers === null) throw new CustomError.NotFoundError("Buyers no dey");
+    res
+      .status(StatusCodes.OK)
+      .json({ data: buyers, number_of_buyers: buyers.length });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
+  }
+};
+
+exports.viewSingleBuyer = async (req, res) => {
+  const { id: buyerId } = req.params;
+  try {
+    const buyer = await Buyer.findOne({ where: { id: buyerId } });
+    if (!buyer) throw new CustomError.NotFoundError("Buyer no dey");
+    const tokenUser = createTokenUser(buyer);
+    res.status(StatusCodes.OK).json({ data: tokenUser });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
+  }
+};
+
+exports.viewMyBuyerProfile = async (req, res) => {
+  const buyerId = req.user.userId;
+  try {
+    const buyer = await Buyer.findOne({ where: { id: buyerId } });
+    if (!buyer) throw new CustomError.NotFoundError("Buyer no dey");
+    const tokenUser = createTokenUser(buyer);
+    res.status(StatusCodes.OK).json({ data: tokenUser });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
+  }
+};
