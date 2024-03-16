@@ -1,5 +1,6 @@
 const CustomError = require("../errors");
 const { isValidToken } = require("../utils");
+const { StatusCodes } = require("http-status-codes");
 
 const authenticateUser = async (req, res, next) => {
   const token = req.signedCookies.token;
@@ -29,9 +30,9 @@ const authenticateUser = async (req, res, next) => {
 const authorizePermissions = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      throw new CustomError.UnauthorizedError(
-        "UNAUTHORIZED TO ACCESS THIS ROUTE."
-      );
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ error: "UNAUTHORIZED TO ACCESS THIS ROUTE." });
     }
     next();
   };

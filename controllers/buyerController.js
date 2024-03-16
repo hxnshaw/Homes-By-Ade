@@ -106,3 +106,20 @@ exports.viewMyBuyerProfile = async (req, res) => {
       .json({ error: error.message });
   }
 };
+
+exports.updateBuyerPassword = async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  try {
+    if (!currentPassword || !newPassword)
+      throw new CustomError.BadRequestError("Incomplete info");
+    const buyer = await Buyer.findOne({ where: { id: req.user.userId } });
+    if (!buyer) throw new CustomError.NotFoundError("Not found");
+    buyer.password = newPassword;
+    await buyer.save();
+    res.status(StatusCodes.OK).json({ message: "new password set" });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
+  }
+};
