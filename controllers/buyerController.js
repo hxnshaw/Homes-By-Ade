@@ -158,3 +158,22 @@ exports.deleteBuyerProfile = async (req, res) => {
       .json({ error: error.message });
   }
 };
+
+exports.deleteBuyerProfileByAdmin = async (req, res) => {
+  const { id: buyerId } = req.params;
+
+  try {
+    const buyer = await Buyer.findOne({ where: { id: buyerId } });
+    if (!buyer) throw new CustomError.NotFoundError("Not found");
+    res.cookie("token", "deleteUser", {
+      httpOnly: true,
+      expiresIn: new Date(Date.now()),
+    });
+    await buyer.destroy();
+    res.status(StatusCodes.OK).json({ message: "Account Deleted" });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
+  }
+};

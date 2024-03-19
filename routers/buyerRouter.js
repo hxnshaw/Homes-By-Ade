@@ -9,6 +9,7 @@ const {
   updateBuyerPassword,
   updateBuyerDetails,
   deleteBuyerProfile,
+  deleteBuyerProfileByAdmin,
 } = require("../controllers/buyerController");
 
 const {
@@ -47,6 +48,15 @@ router
     authenticateUser,
     authorizePermissions("admin", "buyer"),
     deleteBuyerProfile
+  );
+
+//Admin route to delete buyer account
+router
+  .route("/buyers/find-buyer/delete-account/:id")
+  .delete(
+    authenticateUser,
+    authorizePermissions("admin"),
+    deleteBuyerProfileByAdmin
   );
 
 //admin route to view a buyer's account
