@@ -7,6 +7,8 @@ const {
   viewSingleBuyer,
   viewMyBuyerProfile,
   updateBuyerPassword,
+  updateBuyerDetails,
+  deleteBuyerProfile,
 } = require("../controllers/buyerController");
 
 const {
@@ -22,11 +24,19 @@ router.post("/buyers/logout", logoutBuyer);
 
 router
   .route("/buyers/view-my-dashboard")
-  .get(authenticateUser, viewMyBuyerProfile);
+  .get(authenticateUser, authorizePermissions("buyer"), viewMyBuyerProfile);
 
 router
   .route("/buyers/view-my-dashboard/update-password")
   .put(authenticateUser, updateBuyerPassword);
+
+router
+  .route("/buyers/view-my-dashboard/update-profile")
+  .put(authenticateUser, updateBuyerDetails);
+
+router
+  .route("/buyers/view-my-dashboard/delete-account")
+  .delete(authenticateUser, authorizePermissions("admin","buyer"), deleteBuyerProfile);
 
 router
   .route("/buyers/find-buyer/:id")
