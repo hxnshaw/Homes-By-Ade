@@ -107,3 +107,45 @@ exports.viewMySellerProfile = async (req, res) => {
       .json({ error: error.message });
   }
 };
+
+exports.updateSellerDetails = async (req, res) => {
+  const { first_name, last_name, phone_number, professional_type } = req.body;
+
+  try {
+    if (!first_name || !last_name || !phone_number || !professional_type)
+      throw new CustomError.BadRequestError("Incomplete Credentials");
+    const seller = await Seller.findOne({ where: { email: req.user.email } });
+    if (!seller) throw new CustomError.NotFoundError("Not found");
+
+    seller.first_name = first_name;
+    seller.last_name = last_name;
+    seller.phone_number = phone_number;
+    seller.professional_type = professional_type;
+
+    await seller.save();
+    const tokenUser = createTokenUser(seller);
+    attachCookiesToResponse({ res, user: tokenUser });
+    res.status(StatusCodes.OK).json({ message: "Profile updated" });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
+  }
+};
+
+exports.updateSellerPassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword)
+      throw new CustomError.BadRequestError("Incomplete Credentials");
+    const seller = await Seller.findOne({ where: { email: req.user.email } });
+    if (!seller) throw new CustomError.NotFoundError("Not found");
+    seller.password = newPassword;
+    await buyer.save();
+    res.status(StatusCodes.OK).json({ message: "new password set" });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
+  }
+};

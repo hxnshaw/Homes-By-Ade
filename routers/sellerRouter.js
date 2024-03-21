@@ -6,6 +6,8 @@ const {
   logoutSeller,
   viewSingleSeller,
   viewMySellerProfile,
+  updateSellerDetails,
+  updateSellerPassword,
 } = require("../controllers/sellerController");
 
 const {
@@ -24,6 +26,14 @@ router
 router
   .route("/sellers/view-my-dashboard")
   .get(authenticateUser, authorizePermissions("seller"), viewMySellerProfile);
+
+router
+  .route("/sellers/view-my-dashboard/update-profile")
+  .put(authenticateUser, authorizePermissions("seller"), updateSellerDetails);
+
+router
+  .route("/sellers/view-my-dashboard/update-password")
+  .put(authenticateUser, authorizePermissions("seller"), updateSellerPassword);
 
 router
   .route("/sellers/find-seller/:id")
