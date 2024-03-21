@@ -69,3 +69,41 @@ exports.loginSeller = async (req, res) => {
       .json({ error: error.message });
   }
 };
+
+exports.logoutSeller = async (req, res) => {
+  try {
+    res.cookie("token", "logout", {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+    });
+    res.status(StatusCodes.OK).json({ message: "You are logged out" });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
+  }
+};
+
+exports.viewSingleSeller = async (req, res) => {
+  const { id: buyerId } = req.params;
+  try {
+    const seller = await Seller.findOne({ where: { id: buyerId } });
+    if (!seller) throw new CustomError.NotFoundError("Buyer Not Found");
+    const tokenUser = createTokenUser(seller);
+    res.status(StatusCodes.OK).json({ data: tokenUser });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
+  }
+};
+
+exports.viewMySellerProfile = async (req, res) => {
+  try {
+    res.status(StatusCodes.OK).json({ user: req.user });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
+  }
+};
