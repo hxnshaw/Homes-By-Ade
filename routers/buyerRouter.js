@@ -4,6 +4,7 @@ const {
   registerBuyer,
   loginBuyer,
   logoutBuyer,
+  getAllBuyers,
   viewSingleBuyer,
   viewMyBuyerProfile,
   updateBuyerPassword,
@@ -25,6 +26,11 @@ router.post("/buyers/login", loginBuyer);
 
 //logout buyer
 router.post("/buyers/logout", logoutBuyer);
+
+//Admin route to view all registered buyers
+router
+  .route("/buyers/view-all-buyers")
+  .get(authenticateUser, authorizePermissions("admin"), getAllBuyers);
 
 //view buyer profile
 router

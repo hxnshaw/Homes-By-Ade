@@ -72,7 +72,7 @@ exports.getAllBuyers = async (req, res) => {
     if (buyers === null) throw new CustomError.NotFoundError("Buyers no dey");
     res
       .status(StatusCodes.OK)
-      .json({ data: buyers, number_of_buyers: buyers.length });
+      .json({ number_of_buyers: buyers.length, data: buyers });
   } catch (error) {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)

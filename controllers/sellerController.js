@@ -84,6 +84,22 @@ exports.logoutSeller = async (req, res) => {
   }
 };
 
+exports.getAllSellers = async (req, res) => {
+  try {
+    const sellers = await Seller.findAll({
+      attributes: { exclude: ["password"] },
+    });
+    if (sellers === null) throw new CustomError.NotFoundError("Sellers no dey");
+    res
+      .status(StatusCodes.OK)
+      .json({ number_of_sellers: sellers.length, data: sellers });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
+  }
+};
+
 exports.viewSingleSeller = async (req, res) => {
   const { id: buyerId } = req.params;
   try {
@@ -141,8 +157,44 @@ exports.updateSellerPassword = async (req, res) => {
     const seller = await Seller.findOne({ where: { email: req.user.email } });
     if (!seller) throw new CustomError.NotFoundError("Not found");
     seller.password = newPassword;
-    await buyer.save();
+    await seller.save();
     res.status(StatusCodes.OK).json({ message: "new password set" });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
+  }
+};
+
+exports.deleteSellerProfile = async (req, res) => {
+  try {
+    const seller = await Seller.findOne({ where: { email: req.user.email } });
+    if (!seller) throw new CustomError.NotFoundError("Not found");
+    res.cookie("token", "deleteUser", {
+      httpOnly: true,
+      expiresIn: new Date(Date.now()),
+    });
+    await seller.destroy();
+    res.status(StatusCodes.OK).json({ message: "Account Deleted" });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
+  }
+};
+
+exports.deleteSellerProfileByAdmin = async (req, res) => {
+  const { id: sellerId } = req.params;
+
+  try {
+    const seller = await Seller.findOne({ where: { id: sellerId } });
+    if (!seller) throw new CustomError.NotFoundError("Not found");
+    res.cookie("token", "deleteUser", {
+      httpOnly: true,
+      expiresIn: new Date(Date.now()),
+    });
+    await seller.destroy();
+    res.status(StatusCodes.OK).json({ message: "Account Deleted" });
   } catch (error) {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
